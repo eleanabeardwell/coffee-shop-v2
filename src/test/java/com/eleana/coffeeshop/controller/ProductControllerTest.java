@@ -1,24 +1,24 @@
 package com.eleana.coffeeshop.controller;
 
-import com.eleana.coffeeshop.product.Product;
+import com.eleana.coffeeshop.dto.ProductDto;
 import com.eleana.coffeeshop.product.ProductService;
 import com.eleana.coffeeshop.product.Size;
 import com.eleana.coffeeshop.repository.ProductRepository;
-import com.eleana.coffeeshop.resources.ProductList;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONException;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,56 +32,26 @@ class ProductControllerTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    ProductControllerTest() throws JSONException {
-    }
+    @MockBean
+    private ProductService service;
 
     @Test
+    @DisplayName("get product with product id returns a product")
     void getLatteProduct() throws Exception {
 
+        //given
+        ProductDto latteProduct = new ProductDto();
+        latteProduct.setProductId(112L);
+        latteProduct.setProductName("Latte");
+        latteProduct.setBasePrice(BigDecimal.valueOf(2.55));
+        latteProduct.setSize(Size.MEDIUM);
+        latteProduct.setAvailableSizes(List.of(Size.SMALL, Size.MEDIUM, Size.LARGE));
+        latteProduct.setStockLevel(10);
+
         //when
-        //service.getProduct(id) --> return mockData (Product Dto)
+        when(service.getProduct(112L)).thenReturn(latteProduct);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/product/111"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.productId").value(111))
-                .andExpect(jsonPath("$.productName").value("Latte"))
-                .andExpect(jsonPath("$.size").value("SMALL"))
-                .andExpect(jsonPath("$.basePrice").value(2.55));
-    }
-
-    @Test
-    void getSmallLattePrice() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/product/111/price"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("2.55"));
-    }
-
-    @Test
-    void getProducts() throws Exception {
-
-        ProductList productList = new ProductList();
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/product"))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(productList.getProductList()));
-    }
-
-    @Test
-    void addProduct() throws Exception {
-
-        Product product = new Product();
-        product.setProductId(112L);
-        product.setProductName("Latte");
-        product.setBasePrice(BigDecimal.valueOf(2.55));
-        product.setSize(Size.MEDIUM);
-        product.setAvailableSizes(List.of(Size.SMALL, Size.MEDIUM, Size.LARGE));
-        product.setStockLevel(10);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/product")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(mapper.writeValueAsString(product)))
-                .andExpect(status().isOk());
-
+        //then
         mockMvc.perform(MockMvcRequestBuilders.get("/product/112"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productId").value(112))
@@ -90,20 +60,82 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.basePrice").value(2.55));
     }
 
-//    private JSONArray sizes = new JSONArray().put("SMALL").put("MEDIUM").put("LARGE");
-//
-//
-//
-//    private String americano = new JSONObject()
-//            .put("size", "SMALL")
-//            .put("basePrice", 1.50)
-//            .put("availableSizes", sizes)
-//            .put("productId", 141)
-//            .put("productName", "Americano")
-//            .put("stockLevel", 30)
-//            .put("additionalCost", 0)
-//            .toString();
+    @Test
+    void getLargeLattePrice() throws Exception {
 
+        //given
+        ProductDto latteProduct = new ProductDto();
+        latteProduct.setProductId(113L);
+        latteProduct.setProductName("Latte");
+        latteProduct.setBasePrice(BigDecimal.valueOf(2.55));
+        latteProduct.setSize(Size.LARGE);
+        latteProduct.setAvailableSizes(List.of(Size.SMALL, Size.MEDIUM, Size.LARGE));
+        latteProduct.setStockLevel(10);
+
+        //when
+        when(service.getPrice(113L)).thenReturn(BigDecimal.valueOf(3.15));
+
+        //then
+        mockMvc.perform(MockMvcRequestBuilders.get("/product/113/price"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("3.15"));
+    }
+
+    @Test
+    void getProducts() throws Exception {
+
+        //given
+        ProductDto latteProduct = new ProductDto();
+        latteProduct.setProductId(113L);
+        latteProduct.setProductName("Latte");
+        latteProduct.setBasePrice(BigDecimal.valueOf(2.55));
+        latteProduct.setSize(Size.LARGE);
+        latteProduct.setAvailableSizes(List.of(Size.SMALL, Size.MEDIUM, Size.LARGE));
+        latteProduct.setStockLevel(10);
+
+        ProductDto espressoProduct = new ProductDto();
+        espressoProduct.setProductId(131L);
+        espressoProduct.setProductName("Espresso");
+        espressoProduct.setBasePrice(BigDecimal.valueOf(1.10));
+        espressoProduct.setSize(Size.SINGLE);
+        espressoProduct.setAvailableSizes(List.of(Size.SINGLE, Size.DOUBLE));
+        espressoProduct.setStockLevel(10);
+
+        //when
+        when(service.getAllProducts()).thenReturn(List.of(latteProduct, espressoProduct));
+
+        //then
+        mockMvc.perform(MockMvcRequestBuilders.get("/product"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2));
+    }
+
+    @Test
+    void addProduct() throws Exception {
+
+        //given
+        ProductDto productDto =  new ProductDto();
+        productDto.setProductId(112L);
+        productDto.setProductName("Latte");
+        productDto.setBasePrice(BigDecimal.valueOf(2.55));
+        productDto.setSize(Size.MEDIUM);
+        productDto.setAvailableSizes(List.of(Size.SMALL, Size.MEDIUM, Size.LARGE));
+        productDto.setStockLevel(10);
+
+        //when
+        when(service.addProduct(productDto)).thenReturn(productDto);
+
+        //then
+        mockMvc.perform(MockMvcRequestBuilders.post("/product")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(productDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.productId").value(112))
+                .andExpect(jsonPath("$.productName").value("Latte"))
+                .andExpect(jsonPath("$.size").value("MEDIUM"))
+                .andExpect(jsonPath("$.basePrice").value(2.55));
+
+    }
 
 }
 

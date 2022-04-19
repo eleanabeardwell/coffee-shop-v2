@@ -32,13 +32,14 @@ public class ProductController {
     }
 
     @GetMapping("/product")
-    public Collection<Product> getAllProducts() {
+    public Collection<ProductDto> getAllProducts() {
         return service.getAllProducts();
     }
 
     @PostMapping("/product")
-    public void addProduct(@RequestBody ProductDto productInfo) {
+    public ProductDto addProduct(@RequestBody ProductDto productInfo) {
         service.addProduct(productInfo);
+        return productInfo;
     };
 
 }

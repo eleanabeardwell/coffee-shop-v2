@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -25,12 +26,13 @@ public class ProductService {
         return product.getBasePrice().add(product.getAdditionalCost());
     }
 
-    public Collection<Product> getAllProducts() {
-        return repository.getAllProducts();
+    public Collection<ProductDto> getAllProducts() {
+        return repository.getAllProducts().stream().map(this::mapToProductDto).collect(Collectors.toList());
     }
 
-    public void addProduct(ProductDto productInfo) {
+    public ProductDto addProduct(ProductDto productInfo) {
         repository.addProduct(mapToProduct(productInfo));
+        return productInfo;
     }
 
     private Product mapToProduct(ProductDto productDto) {
