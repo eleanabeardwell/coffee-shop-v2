@@ -1,7 +1,6 @@
 package com.eleana.coffeeshop.controller;
 
 import com.eleana.coffeeshop.dto.ProductDto;
-import com.eleana.coffeeshop.product.Product;
 import com.eleana.coffeeshop.product.ProductService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +39,7 @@ public class ProductController {
     public ProductDto addProduct(@RequestBody ProductDto productInfo) {
         service.addProduct(productInfo);
         return productInfo;
-    };
+    }
 
+    ;
 }

@@ -27,11 +27,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest({ProductController.class, ProductService.class, ProductRepository.class})
 class ProductControllerTest {
 
+    private final ObjectMapper mapper = new ObjectMapper();
     @Autowired
     private MockMvc mockMvc;
-
-    private final ObjectMapper mapper = new ObjectMapper();
-
     @MockBean
     private ProductService service;
 
@@ -114,7 +112,7 @@ class ProductControllerTest {
     void addProduct() throws Exception {
 
         //given
-        ProductDto productDto =  new ProductDto();
+        ProductDto productDto = new ProductDto();
         productDto.setProductId(112);
         productDto.setProductName("Latte");
         productDto.setBasePrice(BigDecimal.valueOf(2.55));
@@ -134,9 +132,7 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.productName").value("Latte"))
                 .andExpect(jsonPath("$.size").value("MEDIUM"))
                 .andExpect(jsonPath("$.basePrice").value(2.55));
-
     }
-
 }
 
 

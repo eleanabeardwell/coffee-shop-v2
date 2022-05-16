@@ -4,12 +4,9 @@ import com.eleana.coffeeshop.dto.ProductDto;
 import com.eleana.coffeeshop.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder.In;
 import java.math.BigDecimal;
-import java.text.CollationElementIterator;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,7 +21,7 @@ public class ProductService {
     public ProductDto getProduct(Integer id) {
         return mapToProductDto(repository.findById(id).get());
     }
-    
+
     public BigDecimal getPrice(Integer id) {
         Product product = repository.findById(id).get();
         return product.getBasePrice().add(product.getAdditionalCost());
@@ -62,5 +59,4 @@ public class ProductService {
         dto.setStockLevel(product.getStockLevel());
         return dto;
     }
-    
 }
