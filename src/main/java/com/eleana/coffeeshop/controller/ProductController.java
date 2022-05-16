@@ -22,12 +22,12 @@ public class ProductController {
     }
 
     @GetMapping("/product/{productId}")
-    public ProductDto getProduct(@PathVariable("productId") Long productId) {
+    public ProductDto getProduct(@PathVariable("productId") Integer productId) {
         return service.getProduct(productId);
     }
 
     @GetMapping("/product/{productId}/price")
-    public BigDecimal getPrice(@PathVariable("productId") Long productId) {
+    public BigDecimal getPrice(@PathVariable("productId") Integer productId) {
         return service.getPrice(productId);
     }
 

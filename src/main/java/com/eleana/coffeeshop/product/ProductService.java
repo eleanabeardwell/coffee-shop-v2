@@ -4,8 +4,12 @@ import com.eleana.coffeeshop.dto.ProductDto;
 import com.eleana.coffeeshop.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder.In;
 import java.math.BigDecimal;
+import java.text.CollationElementIterator;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,21 +21,23 @@ public class ProductService {
         this.repository = repository;
     }
 
-    public ProductDto getProduct(Long id) {
-        return mapToProductDto(repository.getProduct(id));
+    public ProductDto getProduct(Integer id) {
+        return mapToProductDto(repository.findById(id).get());
     }
     
-    public BigDecimal getPrice(Long id) {
-        Product product = repository.getProduct(id);
+    public BigDecimal getPrice(Integer id) {
+        Product product = repository.findById(id).get();
         return product.getBasePrice().add(product.getAdditionalCost());
     }
 
     public Collection<ProductDto> getAllProducts() {
-        return repository.getAllProducts().stream().map(this::mapToProductDto).collect(Collectors.toList());
+        Collection<Product> products = new ArrayList<>();
+        repository.findAll().forEach(products::add);
+        return products.stream().map(this::mapToProductDto).collect(Collectors.toList());
     }
 
     public ProductDto addProduct(ProductDto productInfo) {
-        repository.addProduct(mapToProduct(productInfo));
+        repository.save(mapToProduct(productInfo));
         return productInfo;
     }
 

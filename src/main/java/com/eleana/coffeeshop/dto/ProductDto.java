@@ -8,7 +8,7 @@ import java.util.List;
 public class ProductDto {
 
     private String productName;
-    private Long productId;
+    private Integer productId;
     private Size size;
     private BigDecimal basePrice;
     private int stockLevel;
@@ -30,11 +30,11 @@ public class ProductDto {
         this.productName = productName;
     }
 
-    public Long getProductId() {
+    public Integer getProductId() {
         return productId;
     }
 
-    public void setProductId(Long productId) {
+    public void setProductId(Integer productId) {
         this.productId = productId;
     }
 

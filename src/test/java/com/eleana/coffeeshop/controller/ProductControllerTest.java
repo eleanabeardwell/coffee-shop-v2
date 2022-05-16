@@ -41,7 +41,7 @@ class ProductControllerTest {
 
         //given
         ProductDto latteProduct = new ProductDto();
-        latteProduct.setProductId(112L);
+        latteProduct.setProductId(112);
         latteProduct.setProductName("Latte");
         latteProduct.setBasePrice(BigDecimal.valueOf(2.55));
         latteProduct.setSize(Size.MEDIUM);
@@ -49,7 +49,7 @@ class ProductControllerTest {
         latteProduct.setStockLevel(10);
 
         //when
-        when(service.getProduct(112L)).thenReturn(latteProduct);
+        when(service.getProduct(112)).thenReturn(latteProduct);
 
         //then
         mockMvc.perform(MockMvcRequestBuilders.get("/product/112"))
@@ -65,7 +65,7 @@ class ProductControllerTest {
 
         //given
         ProductDto latteProduct = new ProductDto();
-        latteProduct.setProductId(113L);
+        latteProduct.setProductId(113);
         latteProduct.setProductName("Latte");
         latteProduct.setBasePrice(BigDecimal.valueOf(2.55));
         latteProduct.setSize(Size.LARGE);
@@ -73,7 +73,7 @@ class ProductControllerTest {
         latteProduct.setStockLevel(10);
 
         //when
-        when(service.getPrice(113L)).thenReturn(BigDecimal.valueOf(3.15));
+        when(service.getPrice(113)).thenReturn(BigDecimal.valueOf(3.15));
 
         //then
         mockMvc.perform(MockMvcRequestBuilders.get("/product/113/price"))
@@ -86,7 +86,7 @@ class ProductControllerTest {
 
         //given
         ProductDto latteProduct = new ProductDto();
-        latteProduct.setProductId(113L);
+        latteProduct.setProductId(113);
         latteProduct.setProductName("Latte");
         latteProduct.setBasePrice(BigDecimal.valueOf(2.55));
         latteProduct.setSize(Size.LARGE);
@@ -94,7 +94,7 @@ class ProductControllerTest {
         latteProduct.setStockLevel(10);
 
         ProductDto espressoProduct = new ProductDto();
-        espressoProduct.setProductId(131L);
+        espressoProduct.setProductId(131);
         espressoProduct.setProductName("Espresso");
         espressoProduct.setBasePrice(BigDecimal.valueOf(1.10));
         espressoProduct.setSize(Size.SINGLE);
@@ -115,7 +115,7 @@ class ProductControllerTest {
 
         //given
         ProductDto productDto =  new ProductDto();
-        productDto.setProductId(112L);
+        productDto.setProductId(112);
         productDto.setProductName("Latte");
         productDto.setBasePrice(BigDecimal.valueOf(2.55));
         productDto.setSize(Size.MEDIUM);

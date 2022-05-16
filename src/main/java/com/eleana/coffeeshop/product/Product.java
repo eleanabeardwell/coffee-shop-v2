@@ -1,15 +1,31 @@
 package com.eleana.coffeeshop.product;
 
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.List;
 
+
+@Entity
+@Table
 public class Product {
 
+    @Id
+    @Column
+    private Integer productId;
+    @Column
     private String productName;
-    private Long productId;
+    @Column
     private Size size;
+    @Column
     private BigDecimal basePrice;
+    @Column
     private int stockLevel;
+    @Column
+    @ElementCollection(targetClass=Size.class)
     private List<Size> availableSizes;
 
     public List<Size> getAvailableSizes() {
@@ -32,11 +48,11 @@ public class Product {
         this.productName = productName;
     }
 
-    public Long getProductId() {
+    public Integer getProductId() {
         return productId;
     }
 
-    public void setProductId(Long productId) {
+    public void setProductId(Integer productId) {
         this.productId = productId;
     }
 
