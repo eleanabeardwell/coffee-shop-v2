@@ -71,7 +71,6 @@ class ProductControllerIntegrationTest {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/product"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.productId").value(112))
                 .andExpect(jsonPath("$.length()").value(1));
 
     }

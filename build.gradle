@@ -46,6 +46,10 @@ test {
 	useJUnitPlatform()
 }
 
+rootProject.tasks.named("processIntegrationTestResources") {
+	duplicatesStrategy = 'include'
+}
+
 task integrationTest(type: Test) {
 	useJUnitPlatform()
 	testClassesDirs = sourceSets.integrationTest.output.classesDirs
