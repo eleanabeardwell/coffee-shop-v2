@@ -3,6 +3,8 @@ package com.eleana.coffeeshop.product;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigDecimal;
@@ -26,6 +28,7 @@ public class Product {
     private int stockLevel;
     @Column
     @ElementCollection(targetClass=Size.class)
+    @Enumerated(EnumType.STRING)
     private List<Size> availableSizes;
 
     public List<Size> getAvailableSizes() {

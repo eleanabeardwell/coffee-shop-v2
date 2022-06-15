@@ -1,6 +1,8 @@
 package com.eleana.coffeeshop.controller;
 
 import com.eleana.coffeeshop.dto.ProductDto;
+import com.eleana.coffeeshop.exception.ProductIdAlreadyExistsException;
+import com.eleana.coffeeshop.exception.ProductNotFoundException;
 import com.eleana.coffeeshop.product.ProductService;
 import com.eleana.coffeeshop.product.Size;
 import com.eleana.coffeeshop.repository.ProductRepository;
@@ -18,13 +20,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
-@WebMvcTest({ProductController.class, ProductService.class, ProductRepository.class})
+@WebMvcTest({ProductController.class, ProductService.class, ProductRepository.class, ProductNotFoundException.class})
 class ProductControllerTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
@@ -32,6 +35,7 @@ class ProductControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private ProductService service;
+    private ProductNotFoundException exception;
 
     @Test
     @DisplayName("get product with product id returns a product")
@@ -59,6 +63,7 @@ class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("get product price with product id returns correct price")
     void getLargeLattePrice() throws Exception {
 
         //given
@@ -80,6 +85,7 @@ class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("get products returns a list of products")
     void getProducts() throws Exception {
 
         //given
@@ -109,6 +115,7 @@ class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("add product returns product")
     void addProduct() throws Exception {
 
         //given
@@ -132,6 +139,32 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.productName").value("Latte"))
                 .andExpect(jsonPath("$.size").value("MEDIUM"))
                 .andExpect(jsonPath("$.basePrice").value(2.55));
+    }
+
+    @Test
+    @DisplayName("get product with product id not found returns a ProductNotFoundException")
+    void getLatteProductReturnsProductNotFoundException() throws Exception {
+
+        //when
+        doThrow(ProductNotFoundException.class).when(service).getProduct(112);
+
+        //then
+        mockMvc.perform(MockMvcRequestBuilders.get("/product/112"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Product not found"));
+    }
+
+    @Test
+    @DisplayName("get product price with product id not found returns a ProductNotFoundException")
+    void getLatteProductPriceReturnsProductNotFoundException() throws Exception {
+
+        //when
+        doThrow(ProductNotFoundException.class).when(service).getPrice(112);
+
+        //then
+        mockMvc.perform(MockMvcRequestBuilders.get("/product/112/price"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Product not found"));
     }
 }
 

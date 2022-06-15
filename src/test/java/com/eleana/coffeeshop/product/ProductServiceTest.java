@@ -156,4 +156,5 @@ class ProductServiceTest {
         assertEquals(latteProductDto.getProductId(), result.getProductId());
         assertEquals(latteProductDto.getProductName(), result.getProductName());
     }
+
 }

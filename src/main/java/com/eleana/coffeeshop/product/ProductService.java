@@ -1,10 +1,14 @@
 package com.eleana.coffeeshop.product;
 
 import com.eleana.coffeeshop.dto.ProductDto;
+import com.eleana.coffeeshop.exception.ProductIdAlreadyExistsException;
+import com.eleana.coffeeshop.exception.ProductNotFoundException;
 import com.eleana.coffeeshop.repository.ProductRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -19,11 +23,11 @@ public class ProductService {
     }
 
     public ProductDto getProduct(Integer id) {
-        return mapToProductDto(repository.findById(id).get());
+        return mapToProductDto(repository.findById(id).orElseThrow(ProductNotFoundException::new));
     }
 
     public BigDecimal getPrice(Integer id) {
-        Product product = repository.findById(id).get();
+        Product product = repository.findById(id).orElseThrow(ProductNotFoundException::new);
         return product.getBasePrice().add(product.getAdditionalCost());
     }
 
@@ -34,8 +38,12 @@ public class ProductService {
     }
 
     public ProductDto addProduct(ProductDto productInfo) {
-        repository.save(mapToProduct(productInfo));
-        return productInfo;
+        if(repository.findById(productInfo.getProductId()).isEmpty()) {
+            repository.save(mapToProduct(productInfo));
+            return productInfo;
+        } else {
+            throw new ProductIdAlreadyExistsException();
+        }
     }
 
     private Product mapToProduct(ProductDto productDto) {
