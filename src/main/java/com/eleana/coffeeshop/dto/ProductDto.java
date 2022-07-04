@@ -2,22 +2,26 @@ package com.eleana.coffeeshop.dto;
 
 import com.eleana.coffeeshop.product.Size;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 
 public class ProductDto {
 
-    @NotNull
+    @NotBlank(message = "productName is a required field")
     private String productName;
-    @NotNull
+    @NotNull(message = "productId is a required field") @Min(value = 1, message = "productId should be greater than 1")
     private Integer productId;
-    @NotNull
+    @NotNull(message = "size is a required field")
     private Size size;
-    @NotNull
+    @NotNull(message = "basePrice is a required field")
     private BigDecimal basePrice;
-    @NotNull
+    @NotNull(message = "stockLevel is a required field")
     private int stockLevel;
-    @NotNull
+    @NotEmpty(message = "availableSizes is a required field")
     private List<Size> availableSizes;
 
     public List<Size> getAvailableSizes() {
