@@ -1,4 +1,4 @@
-name: Build and deploy JAR app to Azure Web App
+name: Build and deploy JAR app to Azure Web App - coffee-shop
 
 env:
   AZURE_WEBAPP_NAME: coffee-shop    # set this to the name of your Azure Web App
