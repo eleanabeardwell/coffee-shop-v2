@@ -4,6 +4,7 @@ import com.eleana.coffeeshop.dto.ProductDto;
 import com.eleana.coffeeshop.product.Size;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -62,6 +63,12 @@ class ProductControllerIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/product"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/product")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(productDto)))
+                .andExpect(status().isConflict())
+                .andExpect(content().string("A product with that id already exists, please try again."));
     }
 
     @Test
@@ -79,31 +86,6 @@ class ProductControllerIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/product/116/price"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Product not found"));
-
-    }
-
-    @Test
-    @DisplayName("add product returns 409 Conflict when product id already exists")
-    void addProductReturnsProductIdAlreadyExistsException() throws Exception {
-        ProductDto productDto = new ProductDto();
-        productDto.setProductId(112);
-        productDto.setProductName("Latte");
-        productDto.setBasePrice(BigDecimal.valueOf(2.55));
-        productDto.setSize(Size.MEDIUM);
-        productDto.setAvailableSizes(List.of(Size.SMALL, Size.MEDIUM, Size.LARGE));
-        productDto.setStockLevel(10);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/product")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(mapper.writeValueAsString(productDto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.productId").value(112));
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/product")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(mapper.writeValueAsString(productDto)))
-                .andExpect(status().isConflict())
-                .andExpect(content().string("A product with that id already exists, please try again."));
 
     }
 }
